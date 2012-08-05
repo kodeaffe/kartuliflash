@@ -1,0 +1,174 @@
+<html>
+<head>
+    <title>Georgian Letter Flashcards</title>
+    <meta author="Sebastian Henschel, sakartvelo@kodeaffe.de" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style type="text/css">
+        th, td { text-align: left; padding: .3em; }
+
+        .correct { color: #fff; background: #0f0; }
+        .wrong { color: #fff; background: #f00; }
+        .box { margin-bottom:1em }
+        .georgian-table { font-size: 130%; }
+
+        #english { padding: .5em; }
+        #georgian { font-size: 300%; }
+    </style>
+    <script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript">
+var Modifier = null;
+var Letters = [
+    ['ბ', 'b', 'as in bat'],
+    ['გ', 'g', 'as in go'],
+    ['დ', 'd', 'as in dog'],
+    ['ვ', 'v/w', 'as in very/weary'],
+    ['ზ', 'z', 'as in zoo'],
+    ['თ', 't', 'as in top'],
+    ['კ', 'k\'', 'non-aspirated'],
+    ['ლ', 'l', 'as in love'],
+    ['მ', 'm', 'as in mint'],
+    ['ნ', 'n', 'as in nose'],
+    ['პ', 'p\'', 'non-aspirated'],
+    ['ჟ', 'zh', 'as in pleasure'],
+    ['რ', 'r', 'as in spanish roja'],
+    ['ს', 's', 'as in sad'],
+    ['ტ', 't\'', 'non-aspirated'],
+    ['ფ', 'p', 'as in poof'],
+    ['ქ', 'k', 'as in kick'],
+    ['ღ', 'gh', 'as in french bonjour'],
+    ['ყ', 'q\'', 'non-aspirated'],
+    ['შ', 'sh', 'as in shoot'],
+    ['ჩ', 'ch', 'as in chimp'],
+    ['ც', 'ts', 'as in hot sauce'],
+    ['ძ', 'dz', 'as in foods'],
+    ['წ', 'ts\'', 'non-aspirated'],
+    ['ჭ', 'ch\'', 'non-aspirated'],
+    ['ხ', 'kh', 'as in german loch'],
+    ['ჯ', 'j', 'as in jump'],
+    ['ჰ', 'h', 'as in hot'],
+    ['ა', 'ah', 'as in car'],
+    ['ე', 'eh', 'as in pet'],
+    ['ი', 'ee', 'as in knee'],
+    ['ო', 'oh', 'as in doh'],
+    ['უ', 'oo', 'as in boot'],
+];
+var Current = null;
+var Score = {
+    correct: 0,
+    total: 0,
+}
+
+
+$(function() {
+    $('#showtable').click(function(){
+        if ($('#table').is(':visible')) {
+            $('#table').hide();
+            $('#showtable').html('Show  Table');
+        } else {
+            $('#table').show();
+            $('#showtable').html('Hide  Table');
+        }
+        return false;
+    });
+
+    $('#new').click(function(){
+        var idx = Math.round(Math.random() * (Letters.length - 1));
+        Current = Letters[idx];
+
+        $('#solution').removeAttr('disabled');
+        $('#solution').val('');
+        $('#solution').focus();
+        $('#georgian').html(Current[0]);
+        $('#english').hide();
+        $('#english').html(Current[1] + ' ' + Current[2]);
+        $('#english').removeClass('correct').removeClass('wrong');
+        $('#check').show();
+        return false;
+    });
+
+    $('#check').click(function(){
+        var solution = $('#solution').val();
+        if (!solution) return false;
+
+        var correct = false;
+        if (solution == Current[1]) {
+            correct = true;
+        } else {
+            var vw = Current[1].split('/');
+            if (vw.length == 2) {
+                if (solution == vw[0] || solution == vw[1]) {
+                    correct = true;
+                }
+            }
+        }
+
+        if (correct) {
+           $('#english').addClass('correct');
+           Score.correct += 1;
+        } else {
+           $('#english').addClass('wrong');
+        }
+        Score.total += 1;
+        $('#score').html(Score.correct + ' / ' + Score.total);
+
+        $('#english').show();
+        $('#check').hide();
+        $('#solution').attr('disabled', true);
+        $('#new').focus();
+        return false;
+    });
+
+    $(document).keydown(function (event) {
+        if (Modifier == 18 && event.which == 78) { // Alt+n
+            $('#new').click()
+        }
+        Modifier = event.which;
+    });
+
+    $('#new').click();
+});
+</script>
+</head>
+<body>
+<h1>Georgian Letter Flashcards</h1>
+
+<div style="width:350px; float:left">
+<form>
+    <div class="box" id="flashcard">
+        <div>Georgian: <span id="georgian"></span></div>
+        <br />
+        <div>
+            English:
+            <input type="text" id="solution" size="3" maxlength="3" />
+            <button id="check">Check</button>
+            <span id="english"></span>
+        </div>
+    </div>
+
+    <button class="box" id="new">New Card (Alt+n)</button>
+
+    <div class="box" id="scoreboard">
+        Score: <span id="score">0 / 0</span>
+    </div>
+
+    <div class="box">
+        <button id="showtable">Show  Table</button>
+    </div>
+</form>
+</div>
+
+<table id="table" style="display:none">
+<script type="text/javascript">
+    for (var i = 0; i < Letters.length; i += 2) {
+        document.write('<tr><td class="georgian-table">'+Letters[i][0]+'</td><td>' + Letters[i][1] + ' ' + Letters[i][2] + '</td>');
+        if (i + 1 < Letters.length) {
+            document.write('<td class="georgian-table">'+Letters[i+1][0]+'</td><td>' + Letters[i+1][1] + ' ' + Letters[i+1][2] + '</td></tr>');
+        }
+    }
+</script>
+</table>
+
+<br style="clear:both" />
+
+</body>
+</html>
